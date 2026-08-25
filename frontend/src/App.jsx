@@ -5,23 +5,139 @@ function App() {
   const [role, setRole] = useState("Resident");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
 
     if (email === "" || password === "") {
-      setMessage("Please enter email and password!");
+      alert("Please enter email and password");
       return;
     }
 
-    setMessage(`Login Successful! Welcome ${role}`);
+    setLoggedIn(true);
   };
+
+  if (loggedIn) {
+    return (
+      <div className="dashboard">
+        <aside className="sidebar">
+          <h2>🏢 SmartSociety</h2>
+
+          <div className="menu">
+            <p className="active-menu">🏠 Dashboard</p>
+            <p>👤 My Profile</p>
+            <p>📝 Complaints</p>
+            <p>💳 Payments</p>
+            <p>📅 Amenity Booking</p>
+            <p>📢 Notices</p>
+            <p>🚪 Visitors</p>
+          </div>
+
+          <button
+            className="logout-btn"
+            onClick={() => setLoggedIn(false)}
+          >
+            Logout
+          </button>
+        </aside>
+
+        <main className="dashboard-main">
+          <div className="dashboard-header">
+            <div>
+              <h1>Welcome, {role}! 👋</h1>
+              <p>Here's what's happening in your society today.</p>
+            </div>
+
+            <div className="profile">
+              🔔 <span>{role}</span> 👤
+            </div>
+          </div>
+
+          <div className="cards">
+            <div className="dashboard-card">
+              <div className="card-icon">👥</div>
+              <div>
+                <p>Total Residents</p>
+                <h2>248</h2>
+              </div>
+            </div>
+
+            <div className="dashboard-card">
+              <div className="card-icon">📝</div>
+              <div>
+                <p>Open Complaints</p>
+                <h2>12</h2>
+              </div>
+            </div>
+
+            <div className="dashboard-card">
+              <div className="card-icon">🚪</div>
+              <div>
+                <p>Visitors Today</p>
+                <h2>36</h2>
+              </div>
+            </div>
+
+            <div className="dashboard-card">
+              <div className="card-icon">💳</div>
+              <div>
+                <p>Maintenance Due</p>
+                <h2>₹2,500</h2>
+              </div>
+            </div>
+          </div>
+
+          <div className="dashboard-content">
+            <div className="recent-section">
+              <h2>Recent Activities</h2>
+
+              <div className="activity">
+                <span>📝</span>
+                <div>
+                  <h4>New Complaint</h4>
+                  <p>Water supply issue reported.</p>
+                </div>
+              </div>
+
+              <div className="activity">
+                <span>💳</span>
+                <div>
+                  <h4>Payment Received</h4>
+                  <p>Maintenance payment completed.</p>
+                </div>
+              </div>
+
+              <div className="activity">
+                <span>🚪</span>
+                <div>
+                  <h4>Visitor Entry</h4>
+                  <p>A visitor entered the society.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="notice-section">
+              <h2>📢 Latest Notices</h2>
+
+              <div className="notice">
+                <h4>Water Maintenance</h4>
+                <p>Water supply maintenance on Sunday.</p>
+              </div>
+
+              <div className="notice">
+                <h4>Community Meeting</h4>
+                <p>Monthly society meeting this weekend.</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
-      <div className="background"></div>
-
       <div className="container">
 
         <div className="left-section">
@@ -34,70 +150,18 @@ function App() {
             <span className="tag">SMART LIVING PLATFORM</span>
 
             <h1>
-              Manage Your
-              <span> Community</span>
-              <br />
-              Smarter.
+              Manage Your <span>Community</span> Smarter.
             </h1>
 
             <p>
-              A simple and secure platform to manage residents,
-              visitors, complaints, maintenance payments and society
-              activities.
+              A secure platform to manage residents, visitors,
+              complaints, maintenance payments and society activities.
             </p>
-
-            <div className="features">
-              <div className="feature">
-                <span>🛡️</span>
-                <div>
-                  <h3>Secure Access</h3>
-                  <p>Role-based authentication and authorization</p>
-                </div>
-              </div>
-
-              <div className="feature">
-                <span>👥</span>
-                <div>
-                  <h3>Easy Management</h3>
-                  <p>Manage your society from one platform</p>
-                </div>
-              </div>
-
-              <div className="feature">
-                <span>⚡</span>
-                <div>
-                  <h3>Fast & Efficient</h3>
-                  <p>Quick access to all important services</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="stats">
-            <div>
-              <h2>500+</h2>
-              <p>Residents</p>
-            </div>
-
-            <div>
-              <h2>24/7</h2>
-              <p>Security</p>
-            </div>
-
-            <div>
-              <h2>100%</h2>
-              <p>Digital</p>
-            </div>
           </div>
         </div>
 
         <div className="login-section">
           <div className="login-card">
-
-            <div className="mobile-logo">
-              <div className="logo-icon">🏢</div>
-              <h2>SmartSociety</h2>
-            </div>
 
             <div className="login-header">
               <h1>Welcome Back 👋</h1>
@@ -109,29 +173,25 @@ function App() {
                 className={role === "Resident" ? "role active" : "role"}
                 onClick={() => setRole("Resident")}
               >
-                <span>🏠</span>
-                Resident
+                🏠 Resident
               </button>
 
               <button
                 className={role === "Security Guard" ? "role active" : "role"}
                 onClick={() => setRole("Security Guard")}
               >
-                <span>🛡️</span>
-                Security
+                🛡️ Security
               </button>
 
               <button
                 className={role === "Admin" ? "role active" : "role"}
                 onClick={() => setRole("Admin")}
               >
-                <span>👨‍💼</span>
-                Admin
+                👨‍💼 Admin
               </button>
             </div>
 
             <form onSubmit={handleLogin}>
-
               <div className="input-group">
                 <label>Email Address</label>
                 <div className="input-box">
@@ -158,35 +218,10 @@ function App() {
                 </div>
               </div>
 
-              <div className="login-options">
-                <label>
-                  <input type="checkbox" />
-                  Remember me
-                </label>
-
-                <a href="#forgot">Forgot Password?</a>
-              </div>
-
               <button type="submit" className="login-btn">
                 Login as {role} →
               </button>
-
             </form>
-
-            {message && (
-              <div className="message">
-                {message}
-              </div>
-            )}
-
-            <p className="register">
-              New to SmartSociety?
-              <a href="#register"> Create an Account</a>
-            </p>
-
-            <div className="security-text">
-              🔐 Your information is protected and secure
-            </div>
 
           </div>
         </div>
