@@ -6,16 +6,33 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoginError("");
 
     if (email === "" || password === "") {
-      alert("Please enter email and password");
+      setLoginError("Please enter email and password");
       return;
     }
 
-    setLoggedIn(true);
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      setLoggedIn(true);
+    } catch (error) {
+      setLoginError(error.message || "Unable to connect to the server");
+    }
   };
 
   if (loggedIn) {
@@ -217,6 +234,8 @@ function App() {
                   />
                 </div>
               </div>
+
+              {loginError && <p className="login-error">{loginError}</p>}
 
               <button type="submit" className="login-btn">
                 Login as {role} →
