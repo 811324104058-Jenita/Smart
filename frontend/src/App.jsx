@@ -18,16 +18,23 @@ function App() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch("http://localhost:8080/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, role }),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      const data = await response.text();
+
+if (!response.ok) {
+  throw new Error(data || "Login failed");
+}
+
+if (data === "Login successful") {
+  setLoggedIn(true);
+} else {
+  throw new Error(data);
+}
 
       setLoggedIn(true);
     } catch (error) {
