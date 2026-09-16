@@ -1,5 +1,8 @@
 package com.smartsociety.smart_society;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,18 +24,36 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public Map<String, Object> login(@RequestBody User user) {
 
-        User existingUser = userRepository.findByEmail(user.getEmail()).orElse(null);
+        Map<String, Object> response = new HashMap<>();
+
+        User existingUser = userRepository
+                .findByEmail(user.getEmail())
+                .orElse(null);
 
         if (existingUser == null) {
-            return "Invalid email or password";
+
+            response.put("success", false);
+            response.put("message", "Invalid email or password");
+
+            return response;
         }
 
         if (!existingUser.getPassword().equals(user.getPassword())) {
-            return "Invalid email or password";
+
+            response.put("success", false);
+            response.put("message", "Invalid email or password");
+
+            return response;
         }
 
-        return "Login successful";
+        response.put("success", true);
+        response.put("message", "Login successful");
+        response.put("email", existingUser.getEmail());
+        response.put("name", existingUser.getName());
+        response.put("role", existingUser.getRole());
+
+        return response;
     }
 }
