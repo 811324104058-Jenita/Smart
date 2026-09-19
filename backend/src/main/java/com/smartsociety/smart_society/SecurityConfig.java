@@ -24,7 +24,10 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/register",
                                 "/api/complaints/**",
-                                "/api/payments/**"
+                                "/api/payments/**",
+                                "/api/amenities/**",
+                                "/api/bookings",
+                                "/api/bookings/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );
