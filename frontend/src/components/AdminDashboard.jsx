@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Dashboard.css";
+import AdminNoticePage from "./AdminNoticePage";
 
 function AdminDashboard({ email, onLogout }) {
   const [users, setUsers] = useState([]);
@@ -11,6 +12,14 @@ function AdminDashboard({ email, onLogout }) {
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error loading users:", error));
   }, []);
+
+  if (currentPage === "notices") {
+    return (
+      <AdminNoticePage
+        onBack={() => setCurrentPage("dashboard")}
+      />
+    );
+  }
 
   if (currentPage === "residents") {
     return (
@@ -37,7 +46,14 @@ function AdminDashboard({ email, onLogout }) {
             <div className="menu-item">💳 Payments</div>
             <div className="menu-item">🚪 Visitors</div>
             <div className="menu-item">📅 Amenities</div>
-            <div className="menu-item">📢 Notices</div>
+
+            <div
+              className="menu-item"
+              onClick={() => setCurrentPage("notices")}
+            >
+              📢 Notices
+            </div>
+
             <div className="menu-item">📈 Reports</div>
           </div>
 
@@ -56,7 +72,11 @@ function AdminDashboard({ email, onLogout }) {
 
             <div className="user-info">
               🔔
-              <div className="user-avatar">👨‍💼</div>
+
+              <div className="user-avatar">
+                👨‍💼
+              </div>
+
               <div>
                 <strong>Administrator</strong>
                 <p>{email}</p>
@@ -174,7 +194,14 @@ function AdminDashboard({ email, onLogout }) {
           <div className="menu-item">💳 Payments</div>
           <div className="menu-item">🚪 Visitors</div>
           <div className="menu-item">📅 Amenities</div>
-          <div className="menu-item">📢 Notices</div>
+
+          <div
+            className="menu-item"
+            onClick={() => setCurrentPage("notices")}
+          >
+            📢 Notices
+          </div>
+
           <div className="menu-item">📈 Reports</div>
         </div>
 
@@ -193,7 +220,11 @@ function AdminDashboard({ email, onLogout }) {
 
           <div className="user-info">
             🔔
-            <div className="user-avatar">👨‍💼</div>
+
+            <div className="user-avatar">
+              👨‍💼
+            </div>
+
             <div>
               <strong>Administrator</strong>
               <p>{email}</p>
@@ -218,6 +249,7 @@ function AdminDashboard({ email, onLogout }) {
 
           <div className="stat-card">
             <div className="stat-icon">📝</div>
+
             <div>
               <p>Open Complaints</p>
               <h2>12</h2>
@@ -227,6 +259,7 @@ function AdminDashboard({ email, onLogout }) {
 
           <div className="stat-card">
             <div className="stat-icon">💳</div>
+
             <div>
               <p>Monthly Collection</p>
               <h2>₹4.8L</h2>
@@ -236,6 +269,7 @@ function AdminDashboard({ email, onLogout }) {
 
           <div className="stat-card">
             <div className="stat-icon">🚪</div>
+
             <div>
               <p>Visitors Today</p>
               <h2>36</h2>
@@ -257,37 +291,45 @@ function AdminDashboard({ email, onLogout }) {
 
             <div className="activity">
               <span className="activity-icon">👤</span>
+
               <div>
                 <h4>New Resident Added</h4>
                 <p>Resident account management is available.</p>
               </div>
+
               <small>Today</small>
             </div>
 
             <div className="activity">
               <span className="activity-icon">📝</span>
+
               <div>
                 <h4>Complaint Management</h4>
                 <p>Review and manage resident complaints.</p>
               </div>
+
               <small>Today</small>
             </div>
 
             <div className="activity">
               <span className="activity-icon">💳</span>
+
               <div>
                 <h4>Payment Received</h4>
                 <p>Maintenance payment received.</p>
               </div>
+
               <small>Today</small>
             </div>
 
             <div className="activity">
               <span className="activity-icon">📢</span>
+
               <div>
                 <h4>Notice Management</h4>
                 <p>Society announcements can be managed here.</p>
               </div>
+
               <small>Today</small>
             </div>
           </div>
@@ -306,14 +348,20 @@ function AdminDashboard({ email, onLogout }) {
               style={{ cursor: "pointer" }}
             >
               <span>👥</span>
+
               <div>
                 <h4>Manage Residents</h4>
                 <p>Add, update or manage resident information.</p>
               </div>
             </div>
 
-            <div className="notice-card">
+            <div
+              className="notice-card"
+              onClick={() => setCurrentPage("notices")}
+              style={{ cursor: "pointer" }}
+            >
               <span>📢</span>
+
               <div>
                 <h4>Create Notice</h4>
                 <p>Publish an announcement for all residents.</p>
@@ -322,6 +370,7 @@ function AdminDashboard({ email, onLogout }) {
 
             <div className="notice-card">
               <span>📊</span>
+
               <div>
                 <h4>View Reports</h4>
                 <p>Check payments, complaints and society reports.</p>
