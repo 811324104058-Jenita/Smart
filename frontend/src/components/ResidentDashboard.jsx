@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Dashboard.css";
+import NoticePage from "./NoticePage";
 
 import ComplaintPage from "./ComplaintPage";
 import PaymentPage from "./PaymentPage";
@@ -40,6 +41,14 @@ function ResidentDashboard({ email, onLogout }) {
     return (
       <VisitorPage
         email={email}
+        onBack={() => setCurrentPage("dashboard")}
+      />
+    );
+  }
+
+  if (currentPage === "notices") {
+    return (
+      <NoticePage
         onBack={() => setCurrentPage("dashboard")}
       />
     );
@@ -88,7 +97,10 @@ function ResidentDashboard({ email, onLogout }) {
             📅 Amenity Booking
           </div>
 
-          <div className="menu-item">
+          <div
+            className="menu-item"
+            onClick={() => setCurrentPage("notices")}
+          >
             📢 Notices
           </div>
 
@@ -182,13 +194,17 @@ function ResidentDashboard({ email, onLogout }) {
             </div>
           </div>
 
-          <div className="stat-card">
+          <div
+            className="stat-card"
+            onClick={() => setCurrentPage("notices")}
+            style={{ cursor: "pointer" }}
+          >
             <div className="stat-icon">📢</div>
 
             <div>
               <p>New Notices</p>
               <h2>03</h2>
-              <span>Check updates</span>
+              <span>Check updates →</span>
             </div>
           </div>
 
@@ -257,6 +273,10 @@ function ResidentDashboard({ email, onLogout }) {
                 <h2>Latest Notices</h2>
                 <p>Important community announcements</p>
               </div>
+
+              <button onClick={() => setCurrentPage("notices")}>
+                View All
+              </button>
             </div>
 
             <div className="notice-card">
@@ -301,4 +321,4 @@ function ResidentDashboard({ email, onLogout }) {
   );
 }
 
-export default ResidentDashboard; 
+export default ResidentDashboard;
