@@ -1,15 +1,12 @@
 package com.smartsociety.smart_society;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.smartsociety.smart_society.dto.UserResponse;
 import com.smartsociety.smart_society.entity.User;
 import com.smartsociety.smart_society.repository.UserRepository;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -24,15 +21,28 @@ public class AdminController {
 
     @GetMapping("/users")
     public List<UserResponse> getAllUsers() {
-
         return userRepository.findAll()
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
     }
 
-    private UserResponse convertToResponse(User user) {
+    @PutMapping("/users/{id}/approve")
+    public String approveUser(@PathVariable Long id) {
 
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return "User not found";
+        }
+
+        user.setStatus("ACTIVE");
+        userRepository.save(user);
+
+        return "User approved successfully";
+    }
+
+    private UserResponse convertToResponse(User user) {
         return new UserResponse(
                 user.getUserId(),
                 user.getName(),

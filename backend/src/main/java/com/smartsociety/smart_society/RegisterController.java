@@ -1,5 +1,6 @@
 package com.smartsociety.smart_society;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +16,14 @@ import com.smartsociety.smart_society.repository.UserRepository;
 public class RegisterController {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public RegisterController(UserRepository userRepository) {
+    public RegisterController(
+            UserRepository userRepository,
+            BCryptPasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
@@ -27,8 +33,12 @@ public class RegisterController {
             return "Email already registered";
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("RESIDENT");
+        user.setStatus("PENDING");
+
         userRepository.save(user);
 
-        return "Registration successful";
+        return "Registration successful. Waiting for admin approval.";
     }
 }

@@ -3,6 +3,7 @@ package com.smartsociety.smart_society;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +19,17 @@ import com.smartsociety.smart_society.repository.UserRepository;
 public class LoginController {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public LoginController(UserRepository userRepository) {
+    public LoginController(
+            UserRepository userRepository,
+            JwtUtil jwtUtil,
+            BCryptPasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -33,18 +42,36 @@ public class LoginController {
                 .orElse(null);
 
         if (existingUser == null ||
-                !existingUser.getPassword().equals(user.getPassword())) {
+                !passwordEncoder.matches(
+                        user.getPassword(),
+                        existingUser.getPassword())) {
 
             response.put("success", false);
             response.put("message", "Invalid email or password");
+
             return response;
         }
+
+        if (!"ACTIVE".equalsIgnoreCase(existingUser.getStatus())) {
+
+            response.put("success", false);
+            response.put("message",
+                    "Your account is waiting for admin approval");
+
+            return response;
+        }
+
+        String token = jwtUtil.generateToken(
+                existingUser.getEmail(),
+                existingUser.getRole()
+        );
 
         response.put("success", true);
         response.put("message", "Login successful");
         response.put("email", existingUser.getEmail());
         response.put("name", existingUser.getName());
         response.put("role", existingUser.getRole());
+        response.put("token", token);
 
         return response;
     }
