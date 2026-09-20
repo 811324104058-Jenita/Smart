@@ -4,9 +4,9 @@ import "./Dashboard.css";
 import ComplaintPage from "./ComplaintPage";
 import PaymentPage from "./PaymentPage";
 import AmenityBookingPage from "./AmenityBookingPage";
+import VisitorPage from "./VisitorPage";
 
 function ResidentDashboard({ email, onLogout }) {
-
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   if (currentPage === "complaints") {
@@ -36,9 +36,17 @@ function ResidentDashboard({ email, onLogout }) {
     );
   }
 
+  if (currentPage === "visitors") {
+    return (
+      <VisitorPage
+        email={email}
+        onBack={() => setCurrentPage("dashboard")}
+      />
+    );
+  }
+
   return (
     <div className="dashboard">
-
       <aside className="sidebar">
 
         <div className="sidebar-logo">
@@ -84,16 +92,16 @@ function ResidentDashboard({ email, onLogout }) {
             📢 Notices
           </div>
 
-          <div className="menu-item">
+          <div
+            className="menu-item"
+            onClick={() => setCurrentPage("visitors")}
+          >
             🚪 Visitors
           </div>
 
         </div>
 
-        <button
-          className="logout-btn"
-          onClick={onLogout}
-        >
+        <button className="logout-btn" onClick={onLogout}>
           🚪 Logout
         </button>
 
@@ -116,7 +124,6 @@ function ResidentDashboard({ email, onLogout }) {
           </div>
 
           <div className="user-info">
-
             🔔
 
             <div className="user-avatar">
@@ -127,7 +134,6 @@ function ResidentDashboard({ email, onLogout }) {
               <strong>Resident</strong>
               <p>{email}</p>
             </div>
-
           </div>
 
         </header>
@@ -139,9 +145,7 @@ function ResidentDashboard({ email, onLogout }) {
             onClick={() => setCurrentPage("complaints")}
             style={{ cursor: "pointer" }}
           >
-            <div className="stat-icon">
-              📝
-            </div>
+            <div className="stat-icon">📝</div>
 
             <div>
               <p>Open Complaints</p>
@@ -155,9 +159,7 @@ function ResidentDashboard({ email, onLogout }) {
             onClick={() => setCurrentPage("payments")}
             style={{ cursor: "pointer" }}
           >
-            <div className="stat-icon">
-              💳
-            </div>
+            <div className="stat-icon">💳</div>
 
             <div>
               <p>Maintenance Due</p>
@@ -171,9 +173,7 @@ function ResidentDashboard({ email, onLogout }) {
             onClick={() => setCurrentPage("amenities")}
             style={{ cursor: "pointer" }}
           >
-            <div className="stat-icon">
-              📅
-            </div>
+            <div className="stat-icon">📅</div>
 
             <div>
               <p>Bookings</p>
@@ -183,17 +183,13 @@ function ResidentDashboard({ email, onLogout }) {
           </div>
 
           <div className="stat-card">
-
-            <div className="stat-icon">
-              📢
-            </div>
+            <div className="stat-icon">📢</div>
 
             <div>
               <p>New Notices</p>
               <h2>03</h2>
               <span>Check updates</span>
             </div>
-
           </div>
 
         </section>
@@ -203,25 +199,18 @@ function ResidentDashboard({ email, onLogout }) {
           <div className="activity-panel">
 
             <div className="section-title">
-
               <div>
                 <h2>Recent Activities</h2>
                 <p>Your latest society updates</p>
               </div>
 
-              <button
-                onClick={() => setCurrentPage("complaints")}
-              >
+              <button onClick={() => setCurrentPage("complaints")}>
                 View All
               </button>
-
             </div>
 
             <div className="activity">
-
-              <span className="activity-icon">
-                📝
-              </span>
+              <span className="activity-icon">📝</span>
 
               <div>
                 <h4>Complaint Updated</h4>
@@ -231,14 +220,10 @@ function ResidentDashboard({ email, onLogout }) {
               </div>
 
               <small>Today</small>
-
             </div>
 
             <div className="activity">
-
-              <span className="activity-icon">
-                💳
-              </span>
+              <span className="activity-icon">💳</span>
 
               <div>
                 <h4>Payment Reminder</h4>
@@ -248,14 +233,10 @@ function ResidentDashboard({ email, onLogout }) {
               </div>
 
               <small>Yesterday</small>
-
             </div>
 
             <div className="activity">
-
-              <span className="activity-icon">
-                📅
-              </span>
+              <span className="activity-icon">📅</span>
 
               <div>
                 <h4>Booking Confirmed</h4>
@@ -265,7 +246,6 @@ function ResidentDashboard({ email, onLogout }) {
               </div>
 
               <small>2 days ago</small>
-
             </div>
 
           </div>
@@ -273,18 +253,13 @@ function ResidentDashboard({ email, onLogout }) {
           <div className="notice-panel">
 
             <div className="section-title">
-
               <div>
                 <h2>Latest Notices</h2>
-                <p>
-                  Important community announcements
-                </p>
+                <p>Important community announcements</p>
               </div>
-
             </div>
 
             <div className="notice-card">
-
               <span>🔧</span>
 
               <div>
@@ -293,11 +268,9 @@ function ResidentDashboard({ email, onLogout }) {
                   Water supply maintenance on Sunday from 10 AM.
                 </p>
               </div>
-
             </div>
 
             <div className="notice-card">
-
               <span>🏢</span>
 
               <div>
@@ -306,11 +279,9 @@ function ResidentDashboard({ email, onLogout }) {
                   Society meeting scheduled for this weekend.
                 </p>
               </div>
-
             </div>
 
             <div className="notice-card">
-
               <span>🎉</span>
 
               <div>
@@ -319,7 +290,6 @@ function ResidentDashboard({ email, onLogout }) {
                   Join us for the upcoming community celebration.
                 </p>
               </div>
-
             </div>
 
           </div>
@@ -327,9 +297,8 @@ function ResidentDashboard({ email, onLogout }) {
         </section>
 
       </main>
-
     </div>
   );
 }
 
-export default ResidentDashboard;
+export default ResidentDashboard; 
