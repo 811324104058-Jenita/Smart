@@ -32,19 +32,11 @@ public class LoginController {
                 .findByEmail(user.getEmail())
                 .orElse(null);
 
-        if (existingUser == null) {
+        if (existingUser == null ||
+                !existingUser.getPassword().equals(user.getPassword())) {
 
             response.put("success", false);
             response.put("message", "Invalid email or password");
-
-            return response;
-        }
-
-        if (!existingUser.getPassword().equals(user.getPassword())) {
-
-            response.put("success", false);
-            response.put("message", "Invalid email or password");
-
             return response;
         }
 
