@@ -5,6 +5,9 @@ import SecurityVisitorPage from "./SecurityVisitorPage";
 function SecurityDashboard({ email, onLogout }) {
   const [currentPage, setCurrentPage] = useState("dashboard");
 
+  const securityEmail =
+    email || localStorage.getItem("email");
+
   if (currentPage === "visitors") {
     return (
       <SecurityVisitorPage
@@ -98,7 +101,7 @@ function SecurityDashboard({ email, onLogout }) {
 
             <div>
               <strong>Security Guard</strong>
-              <p>{email}</p>
+              <p>{securityEmail}</p>
             </div>
 
           </div>

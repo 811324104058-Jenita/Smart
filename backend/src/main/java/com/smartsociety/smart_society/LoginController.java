@@ -41,22 +41,20 @@ public class LoginController {
                 .findByEmail(user.getEmail())
                 .orElse(null);
 
-        if (existingUser == null ||
-                !passwordEncoder.matches(
-                        user.getPassword(),
-                        existingUser.getPassword())) {
+        if (existingUser == null) {
 
             response.put("success", false);
-            response.put("message", "Invalid email or password");
+            response.put("message", "Email is not registered");
 
             return response;
         }
 
-        if (!"ACTIVE".equalsIgnoreCase(existingUser.getStatus())) {
+        if (!passwordEncoder.matches(
+                user.getPassword(),
+                existingUser.getPassword())) {
 
             response.put("success", false);
-            response.put("message",
-                    "Your account is waiting for admin approval");
+            response.put("message", "Incorrect password");
 
             return response;
         }

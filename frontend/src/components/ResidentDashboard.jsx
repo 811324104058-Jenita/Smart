@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./Dashboard.css";
 import NoticePage from "./NoticePage";
-
 import ComplaintPage from "./ComplaintPage";
 import PaymentPage from "./PaymentPage";
 import AmenityBookingPage from "./AmenityBookingPage";
@@ -10,10 +9,12 @@ import VisitorPage from "./VisitorPage";
 function ResidentDashboard({ email, onLogout }) {
   const [currentPage, setCurrentPage] = useState("dashboard");
 
+  const residentEmail = email || localStorage.getItem("email");
+
   if (currentPage === "complaints") {
     return (
       <ComplaintPage
-        email={email}
+        email={residentEmail}
         onBack={() => setCurrentPage("dashboard")}
       />
     );
@@ -22,7 +23,7 @@ function ResidentDashboard({ email, onLogout }) {
   if (currentPage === "payments") {
     return (
       <PaymentPage
-        email={email}
+        email={residentEmail}
         onBack={() => setCurrentPage("dashboard")}
       />
     );
@@ -31,7 +32,7 @@ function ResidentDashboard({ email, onLogout }) {
   if (currentPage === "amenities") {
     return (
       <AmenityBookingPage
-        email={email}
+        email={residentEmail}
         onBack={() => setCurrentPage("dashboard")}
       />
     );
@@ -40,7 +41,7 @@ function ResidentDashboard({ email, onLogout }) {
   if (currentPage === "visitors") {
     return (
       <VisitorPage
-        email={email}
+        email={residentEmail}
         onBack={() => setCurrentPage("dashboard")}
       />
     );
@@ -144,7 +145,7 @@ function ResidentDashboard({ email, onLogout }) {
 
             <div>
               <strong>Resident</strong>
-              <p>{email}</p>
+              <p>{residentEmail}</p>
             </div>
           </div>
 

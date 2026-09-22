@@ -15,19 +15,33 @@ function VisitorPage({ email, onBack }) {
 
   const fetchVisitors = async () => {
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `http://localhost:8080/api/visitors/resident/${email}`
+        `/api/visitors/resident/${email}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
+      if (!response.ok) {
+        throw new Error("Failed to load visitors");
+      }
+
       const data = await response.json();
-      setVisitors(data);
+      setVisitors(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error loading visitors", error);
+      setVisitors([]);
     }
   };
 
   useEffect(() => {
-    fetchVisitors();
+    if (email) {
+      fetchVisitors();
+    }
   }, [email]);
 
   const registerVisitor = async (e) => {
@@ -37,10 +51,13 @@ function VisitorPage({ email, onBack }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/visitors", {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/visitors", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           residentEmail: email,
@@ -55,7 +72,7 @@ function VisitorPage({ email, onBack }) {
         throw new Error("Failed to register visitor");
       }
 
-      const data = await response.json();
+      await response.json();
 
       setMessage("Visitor registered successfully! ✅");
 
@@ -66,6 +83,7 @@ function VisitorPage({ email, onBack }) {
 
       fetchVisitors();
     } catch (error) {
+      console.error("Error registering visitor", error);
       setError("Unable to register visitor ❌");
     }
   };
@@ -105,6 +123,7 @@ function VisitorPage({ email, onBack }) {
             <div className="section-title">
               <div>
                 <h2>Register Visitor</h2>
+
                 <p>
                   Pre-register your visitor before arrival.
                 </p>

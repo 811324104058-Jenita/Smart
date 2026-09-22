@@ -15,9 +15,17 @@ function AmenityBookingPage({ email, onBack }) {
 
   const fetchAmenities = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/amenities"
-      );
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/amenities", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load amenities");
+      }
 
       const data = await response.json();
       setAmenities(data);
@@ -28,20 +36,34 @@ function AmenityBookingPage({ email, onBack }) {
 
   const fetchBookings = async () => {
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `http://localhost:8080/api/bookings/resident/${email}`
+        `/api/bookings/resident/${email}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to load bookings");
+      }
 
       const data = await response.json();
       setBookings(data);
     } catch (error) {
       console.error("Error loading bookings", error);
+      setBookings([]);
     }
   };
 
   useEffect(() => {
-    fetchAmenities();
-    fetchBookings();
+    if (email) {
+      fetchAmenities();
+      fetchBookings();
+    }
   }, [email]);
 
   const selectedAmenity = amenities.find(
@@ -55,13 +77,18 @@ function AmenityBookingPage({ email, onBack }) {
     setError("");
 
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        "http://localhost:8080/api/bookings",
+        "/api/bookings",
         {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
+
           body: JSON.stringify({
             amenityId: Number(amenityId),
             residentEmail: email,
@@ -88,6 +115,7 @@ function AmenityBookingPage({ email, onBack }) {
 
       fetchBookings();
     } catch (error) {
+      console.error("Error booking amenity", error);
       setError(error.message || "Unable to book amenity");
     }
   };
@@ -97,6 +125,7 @@ function AmenityBookingPage({ email, onBack }) {
 
       <div className="complaint-header">
         <div>
+
           <button className="back-btn" onClick={onBack}>
             ← Back to Dashboard
           </button>
@@ -106,6 +135,7 @@ function AmenityBookingPage({ email, onBack }) {
           <p>
             Book community amenities and view your bookings
           </p>
+
         </div>
       </div>
 
@@ -122,7 +152,9 @@ function AmenityBookingPage({ email, onBack }) {
               onChange={(e) => setAmenityId(e.target.value)}
               required
             >
-              <option value="">Select Amenity</option>
+              <option value="">
+                Select Amenity
+              </option>
 
               {amenities.map((amenity) => (
                 <option
@@ -136,6 +168,7 @@ function AmenityBookingPage({ email, onBack }) {
 
             {selectedAmenity && (
               <div className="amenity-info">
+
                 <p>
                   <strong>Location:</strong>{" "}
                   {selectedAmenity.location}
@@ -150,6 +183,7 @@ function AmenityBookingPage({ email, onBack }) {
                   <strong>Booking Fee:</strong>{" "}
                   ₹{selectedAmenity.bookingFee}
                 </p>
+
               </div>
             )}
 
@@ -199,8 +233,11 @@ function AmenityBookingPage({ email, onBack }) {
           <h2>My Bookings</h2>
 
           {bookings.length === 0 ? (
+
             <p>No bookings found.</p>
+
           ) : (
+
             bookings.map((booking) => (
 
               <div

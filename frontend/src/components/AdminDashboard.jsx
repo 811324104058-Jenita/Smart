@@ -7,9 +7,20 @@ function AdminDashboard({ email, onLogout }) {
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/admin/users")
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
+    const token = localStorage.getItem("token");
+
+    fetch("/api/admin/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load users");
+        }
+        return response.json();
+      })
+      .then((data) => setUsers(Array.isArray(data) ? data : []))
       .catch((error) => console.error("Error loading users:", error));
   }, []);
 

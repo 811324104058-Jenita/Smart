@@ -7,6 +7,14 @@ function SecurityVisitorPage({ onBack }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+
+    return {
+      Authorization: `Bearer ${token}`,
+    };
+  };
+
   const searchVisitor = async () => {
     setMessage("");
     setError("");
@@ -19,7 +27,10 @@ function SecurityVisitorPage({ onBack }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/visitors/qr/${qrPass.trim()}`
+        `/api/visitors/qr/${qrPass.trim()}`,
+        {
+          headers: getAuthHeaders(),
+        }
       );
 
       if (!response.ok) {
@@ -29,16 +40,23 @@ function SecurityVisitorPage({ onBack }) {
       const data = await response.json();
       setVisitor(data);
     } catch (error) {
+      console.error(error);
       setError("Visitor not found ❌");
     }
   };
 
   const verifyVisitor = async () => {
+    if (!visitor) return;
+
+    setMessage("");
+    setError("");
+
     try {
       const response = await fetch(
-        `http://localhost:8080/api/visitors/${visitor.id}/verify`,
+        `/api/visitors/${visitor.id}/verify`,
         {
           method: "PUT",
+          headers: getAuthHeaders(),
         }
       );
 
@@ -51,16 +69,23 @@ function SecurityVisitorPage({ onBack }) {
       setVisitor(data);
       setMessage("Visitor verified successfully! ✅");
     } catch (error) {
+      console.error(error);
       setError("Unable to verify visitor ❌");
     }
   };
 
   const recordExit = async () => {
+    if (!visitor) return;
+
+    setMessage("");
+    setError("");
+
     try {
       const response = await fetch(
-        `http://localhost:8080/api/visitors/${visitor.id}/exit`,
+        `/api/visitors/${visitor.id}/exit`,
         {
           method: "PUT",
+          headers: getAuthHeaders(),
         }
       );
 
@@ -73,6 +98,7 @@ function SecurityVisitorPage({ onBack }) {
       setVisitor(data);
       setMessage("Visitor exit recorded successfully! ✅");
     } catch (error) {
+      console.error(error);
       setError("Unable to record exit ❌");
     }
   };
@@ -82,6 +108,7 @@ function SecurityVisitorPage({ onBack }) {
       <main className="dashboard-main">
 
         <header className="dashboard-header">
+
           <div>
             <p className="welcome-text">
               SECURITY MANAGEMENT 🛡️
@@ -100,6 +127,7 @@ function SecurityVisitorPage({ onBack }) {
           >
             ← Back
           </button>
+
         </header>
 
         <section className="dashboard-grid">
@@ -109,6 +137,7 @@ function SecurityVisitorPage({ onBack }) {
             <div className="section-title">
               <div>
                 <h2>Scan / Enter QR Pass</h2>
+
                 <p>
                   Enter the visitor QR pass to verify the visitor.
                 </p>
@@ -133,7 +162,7 @@ function SecurityVisitorPage({ onBack }) {
               <p
                 style={{
                   color: "green",
-                  marginTop: "15px"
+                  marginTop: "15px",
                 }}
               >
                 {message}
@@ -144,7 +173,7 @@ function SecurityVisitorPage({ onBack }) {
               <p
                 style={{
                   color: "red",
-                  marginTop: "15px"
+                  marginTop: "15px",
                 }}
               >
                 {error}
@@ -156,12 +185,15 @@ function SecurityVisitorPage({ onBack }) {
           <div className="notice-panel">
 
             <div className="section-title">
+
               <div>
                 <h2>Visitor Details</h2>
+
                 <p>
                   Visitor information and verification status
                 </p>
               </div>
+
             </div>
 
             {!visitor ? (

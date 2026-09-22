@@ -15,11 +15,31 @@ function AdminNoticePage({ onBack }) {
     status: "PUBLISHED"
   });
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+
+    return {
+      Authorization: `Bearer ${token}`
+    };
+  };
+
   const loadNotices = () => {
-    fetch("http://localhost:8080/api/notices")
-      .then((response) => response.json())
-      .then((data) => setNotices(data))
-      .catch((error) => console.error("Error loading notices:", error));
+    fetch("/api/notices", {
+      headers: getAuthHeaders()
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load notices");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setNotices(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error("Error loading notices:", error);
+      });
   };
 
   useEffect(() => {
@@ -36,14 +56,21 @@ function AdminNoticePage({ onBack }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    fetch("http://localhost:8080/api/notices", {
+    fetch("/api/notices", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        ...getAuthHeaders()
       },
       body: JSON.stringify(formData)
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to create notice");
+        }
+
+        return response.json();
+      })
       .then(() => {
         setFormData({
           title: "",
@@ -58,7 +85,9 @@ function AdminNoticePage({ onBack }) {
         setShowForm(false);
         loadNotices();
       })
-      .catch((error) => console.error("Error creating notice:", error));
+      .catch((error) => {
+        console.error("Error creating notice:", error);
+      });
   };
 
   const handleDelete = (id) => {
@@ -66,13 +95,20 @@ function AdminNoticePage({ onBack }) {
       return;
     }
 
-    fetch(`http://localhost:8080/api/notices/${id}`, {
-      method: "DELETE"
+    fetch(`/api/notices/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders()
     })
-      .then(() => {
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete notice");
+        }
+
         loadNotices();
       })
-      .catch((error) => console.error("Error deleting notice:", error));
+      .catch((error) => {
+        console.error("Error deleting notice:", error);
+      });
   };
 
   return (
@@ -106,6 +142,7 @@ function AdminNoticePage({ onBack }) {
 
             <div style={{ marginBottom: "15px" }}>
               <label>Title</label>
+
               <input
                 type="text"
                 name="title"
@@ -122,6 +159,7 @@ function AdminNoticePage({ onBack }) {
 
             <div style={{ marginBottom: "15px" }}>
               <label>Content</label>
+
               <textarea
                 name="content"
                 value={formData.content}
@@ -138,6 +176,7 @@ function AdminNoticePage({ onBack }) {
 
             <div style={{ marginBottom: "15px" }}>
               <label>Notice Type</label>
+
               <select
                 name="noticeType"
                 value={formData.noticeType}
@@ -158,6 +197,7 @@ function AdminNoticePage({ onBack }) {
 
             <div style={{ marginBottom: "15px" }}>
               <label>Priority</label>
+
               <select
                 name="priority"
                 value={formData.priority}
@@ -176,6 +216,7 @@ function AdminNoticePage({ onBack }) {
 
             <div style={{ marginBottom: "15px" }}>
               <label>Publish Date</label>
+
               <input
                 type="date"
                 name="publishDate"
@@ -192,6 +233,7 @@ function AdminNoticePage({ onBack }) {
 
             <div style={{ marginBottom: "15px" }}>
               <label>Expiry Date</label>
+
               <input
                 type="date"
                 name="expiryDate"
@@ -245,8 +287,8 @@ function AdminNoticePage({ onBack }) {
                 <br />
 
                 <small>
-                  Published: {notice.publishDate} •
-                  Expires: {notice.expiryDate}
+                  Published: {notice.publishDate} • Expires:{" "}
+                  {notice.expiryDate}
                 </small>
               </div>
 

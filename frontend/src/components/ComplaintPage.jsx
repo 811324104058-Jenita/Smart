@@ -13,8 +13,15 @@ function ComplaintPage({ email, onBack }) {
     try {
       setLoading(true);
 
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `http://localhost:8080/api/complaints/resident/${email}`
+        `/api/complaints/resident/${email}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (!response.ok) {
@@ -24,7 +31,6 @@ function ComplaintPage({ email, onBack }) {
       const data = await response.json();
 
       setComplaints(Array.isArray(data) ? data : [data]);
-
     } catch (error) {
       console.error("Error loading complaints", error);
       setComplaints([]);
@@ -34,9 +40,10 @@ function ComplaintPage({ email, onBack }) {
   };
 
   useEffect(() => {
-    fetchComplaints();
+    if (email) {
+      fetchComplaints();
+    }
   }, [email]);
-
 
   const submitComplaint = async (e) => {
     e.preventDefault();
@@ -44,23 +51,21 @@ function ComplaintPage({ email, onBack }) {
     setMessage("");
 
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/complaints",
-        {
-          method: "POST",
+      const token = localStorage.getItem("token");
 
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            title,
-            description,
-            category,
-            residentEmail: email,
-          }),
-        }
-      );
+      const response = await fetch("/api/complaints", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          category,
+          residentEmail: email,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to submit complaint");
@@ -73,12 +78,11 @@ function ComplaintPage({ email, onBack }) {
       setCategory("");
 
       fetchComplaints();
-
     } catch (error) {
+      console.error("Error submitting complaint", error);
       setMessage("Unable to submit complaint ❌");
     }
   };
-
 
   const openComplaints = complaints.filter(
     (complaint) => complaint.status === "OPEN"
@@ -92,56 +96,33 @@ function ComplaintPage({ email, onBack }) {
     (complaint) => complaint.status === "RESOLVED"
   ).length;
 
-
   const getStatusClass = (status) => {
     if (status === "OPEN") return "status-open";
-
-    if (status === "IN_PROGRESS") {
-      return "status-progress";
-    }
-
-    if (status === "RESOLVED") {
-      return "status-resolved";
-    }
-
+    if (status === "IN_PROGRESS") return "status-progress";
+    if (status === "RESOLVED") return "status-resolved";
     return "status-open";
   };
-
 
   return (
     <div className="complaint-page">
 
-      {/* HEADER */}
-
       <div className="complaint-topbar">
-
-        <button
-          className="back-btn"
-          onClick={onBack}
-        >
+        <button className="back-btn" onClick={onBack}>
           ← Back to Dashboard
         </button>
 
         <div className="complaint-user">
-          <div className="complaint-avatar">
-            👤
-          </div>
+          <div className="complaint-avatar">👤</div>
 
           <div>
             <strong>Resident</strong>
             <p>{email}</p>
           </div>
         </div>
-
       </div>
 
-
-      {/* HERO */}
-
       <div className="complaint-header">
-
         <div>
-
           <div className="complaint-tag">
             🏢 SMARTSOCIETY SUPPORT
           </div>
@@ -154,112 +135,70 @@ function ComplaintPage({ email, onBack }) {
             Report issues, track their progress and stay updated
             with every resolution.
           </p>
-
         </div>
-
 
         <div className="complaint-header-icon">
           📝
         </div>
-
       </div>
-
-
-      {/* STATISTICS */}
 
       <div className="complaint-stats">
 
         <div className="complaint-stat-card">
-
-          <div className="complaint-stat-icon">
-            📋
-          </div>
+          <div className="complaint-stat-icon">📋</div>
 
           <div>
             <p>Total Complaints</p>
             <h2>{complaints.length}</h2>
           </div>
-
         </div>
 
-
         <div className="complaint-stat-card">
-
-          <div className="complaint-stat-icon">
-            🔴
-          </div>
+          <div className="complaint-stat-icon">🔴</div>
 
           <div>
             <p>Open</p>
             <h2>{openComplaints}</h2>
           </div>
-
         </div>
 
-
         <div className="complaint-stat-card">
-
-          <div className="complaint-stat-icon">
-            🟡
-          </div>
+          <div className="complaint-stat-icon">🟡</div>
 
           <div>
             <p>In Progress</p>
             <h2>{progressComplaints}</h2>
           </div>
-
         </div>
 
-
         <div className="complaint-stat-card">
-
-          <div className="complaint-stat-icon">
-            🟢
-          </div>
+          <div className="complaint-stat-icon">🟢</div>
 
           <div>
             <p>Resolved</p>
             <h2>{resolvedComplaints}</h2>
           </div>
-
         </div>
 
       </div>
 
-
-      {/* MAIN CONTENT */}
-
       <div className="complaint-container">
-
-
-        {/* FORM */}
 
         <div className="complaint-form-card">
 
           <div className="form-heading">
-
-            <div className="form-icon">
-              ➕
-            </div>
+            <div className="form-icon">➕</div>
 
             <div>
               <h2>Raise a Complaint</h2>
-              <p>
-                Tell us what's wrong and we'll help you.
-              </p>
+              <p>Tell us what's wrong and we'll help you.</p>
             </div>
-
           </div>
-
 
           <form onSubmit={submitComplaint}>
 
-
             <div className="form-group">
-
-              <label>
-                Complaint Title
-              </label>
+              <label>Complaint Title</label>
 
               <input
                 type="text"
@@ -268,22 +207,16 @@ function ComplaintPage({ email, onBack }) {
                 onChange={(e) => setTitle(e.target.value)}
                 required
               />
-
             </div>
 
-
             <div className="form-group">
-
-              <label>
-                Category
-              </label>
+              <label>Category</label>
 
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 required
               >
-
                 <option value="">
                   Select complaint category
                 </option>
@@ -307,29 +240,19 @@ function ComplaintPage({ email, onBack }) {
                 <option value="Other">
                   📌 Other
                 </option>
-
               </select>
-
             </div>
 
-
             <div className="form-group">
-
-              <label>
-                Description
-              </label>
+              <label>Description</label>
 
               <textarea
                 placeholder="Describe your issue in detail..."
                 value={description}
-                onChange={(e) =>
-                  setDescription(e.target.value)
-                }
+                onChange={(e) => setDescription(e.target.value)}
                 required
               />
-
             </div>
-
 
             <button
               type="submit"
@@ -339,73 +262,49 @@ function ComplaintPage({ email, onBack }) {
               <span>→</span>
             </button>
 
-
           </form>
 
-
           {message && (
-
             <div className="complaint-message">
               {message}
             </div>
-
           )}
 
         </div>
 
-
-        {/* COMPLAINT LIST */}
-
         <div className="complaints-list">
 
-
           <div className="complaints-list-header">
-
             <div>
-
               <h2>Your Complaints</h2>
 
               <p>
                 Track all your submitted issues
               </p>
-
             </div>
 
             <div className="complaint-count">
-
               {complaints.length} Total
-
             </div>
-
           </div>
 
-
           {loading ? (
-
             <div className="empty-complaints">
-
-              <div className="empty-icon">
-                ⏳
-              </div>
+              <div className="empty-icon">⏳</div>
 
               <h3>Loading complaints...</h3>
-
             </div>
 
           ) : complaints.length === 0 ? (
 
             <div className="empty-complaints">
-
-              <div className="empty-icon">
-                📭
-              </div>
+              <div className="empty-icon">📭</div>
 
               <h3>No Complaints Yet</h3>
 
               <p>
                 Great! You don't have any complaints at the moment.
               </p>
-
             </div>
 
           ) : (
@@ -422,7 +321,6 @@ function ComplaintPage({ email, onBack }) {
                   <div className="complaint-item-icon">
                     📝
                   </div>
-
 
                   <div className="complaint-info">
 
@@ -442,11 +340,9 @@ function ComplaintPage({ email, onBack }) {
 
                     </div>
 
-
                     <p>
                       {complaint.description}
                     </p>
-
 
                     <div className="complaint-meta">
 
@@ -467,11 +363,9 @@ function ComplaintPage({ email, onBack }) {
               ))}
 
             </div>
-
           )}
 
         </div>
-
 
       </div>
 

@@ -27,22 +27,43 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
+
+                .csrf(csrf ->
+                        csrf.disable()
+                )
+
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
                 )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/login",
-                                "/api/register",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+
+                .authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers(
+                                        "/api/login",
+                                        "/api/register",
+
+                                        // Email OTP endpoints
+                                        "/api/otp/**",
+
+                                        // Swagger
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**"
+                                )
+                                .permitAll()
+
+                                .requestMatchers("/api/admin/**")
+                                .hasRole("ADMIN")
+
+                                .anyRequest()
+                                .authenticated()
                 )
+
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
@@ -58,6 +79,7 @@ public class SecurityConfig {
 
     @Bean
     UserDetailsService userDetailsService() {
+
         return username -> {
             throw new UnsupportedOperationException(
                     "JWT authentication is used"
@@ -68,13 +90,13 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173",
-                        "http://localhost:8080",
-                        "http://127.0.0.1:8080"
+                        "http://127.0.0.1:5173"
                 )
         );
 
@@ -88,14 +110,19 @@ public class SecurityConfig {
                 )
         );
 
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(
+                List.of("*")
+        );
 
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
 
         return source;
     }

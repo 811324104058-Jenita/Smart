@@ -1,5 +1,7 @@
 package com.smartsociety.smart_society;
 
+import java.util.Map;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,28 +19,75 @@ public class RegisterController {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final OtpService otpService;
 
     public RegisterController(
             UserRepository userRepository,
-            BCryptPasswordEncoder passwordEncoder) {
+            BCryptPasswordEncoder passwordEncoder,
+            OtpService otpService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.otpService = otpService;
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public String register(@RequestBody Map<String, String> request) {
 
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        String name = request.get("name");
+        String email = request.get("email");
+        String password = request.get("password");
+        String otp = request.get("otp");
+
+        if (name == null || name.isBlank()) {
+            return "Name is required";
+        }
+
+        if (email == null || email.isBlank()) {
+            return "Email is required";
+        }
+
+        if (password == null || password.isBlank()) {
+            return "Password is required";
+        }
+
+        if (otp == null || otp.isBlank()) {
+            return "Email OTP verification is required";
+        }
+
+        if (userRepository.findByEmail(email).isPresent()) {
             return "Email already registered";
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (password.length() < 8 ||
+                !password.matches(".*[A-Z].*") ||
+                !password.matches(".*[a-z].*") ||
+                !password.matches(".*[0-9].*") ||
+                !password.matches(".*[^a-zA-Z0-9].*")) {
+
+            return "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character";
+        }
+
+        boolean verified = otpService.verifyOtp(email, otp);
+
+        if (!verified) {
+            return "Invalid or expired OTP";
+        }
+
+        User user = new User();
+
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+
+        // New registrations are always residents
         user.setRole("RESIDENT");
-        user.setStatus("PENDING");
+
+        // Account becomes active only after email verification
+        user.setStatus("ACTIVE");
 
         userRepository.save(user);
 
-        return "Registration successful. Waiting for admin approval.";
+        return "Registration successful. You can now login.";
     }
 }

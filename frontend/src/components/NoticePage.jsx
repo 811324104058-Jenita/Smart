@@ -5,44 +5,85 @@ function NoticePage({ onBack }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/notices")
-      .then((response) => response.json())
-      .then((data) => {
-        setNotices(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+    const fetchNotices = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch("/api/notices", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load notices");
+        }
+
+        const data = await response.json();
+
+        setNotices(Array.isArray(data) ? data : []);
+      } catch (error) {
         console.error("Error loading notices:", error);
+        setNotices([]);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchNotices();
   }, []);
 
   return (
     <div className="dashboard-page">
+
       <div className="dashboard-header">
+
         <div>
           <h1>Notices</h1>
-          <p>Society announcements and important updates</p>
+          <p>
+            Society announcements and important updates
+          </p>
         </div>
 
-        <button className="logout-btn" onClick={onBack}>
+        <button
+          className="logout-btn"
+          onClick={onBack}
+        >
           Back to Dashboard
         </button>
+
       </div>
 
       {loading ? (
+
         <p>Loading notices...</p>
+
       ) : notices.length === 0 ? (
+
         <p>No notices available.</p>
+
       ) : (
+
         <div className="dashboard-grid">
+
           {notices.map((notice) => (
-            <div className="dashboard-card" key={notice.noticeId}>
-              <div className="card-icon">📢</div>
 
-              <h3>{notice.title}</h3>
+            <div
+              className="dashboard-card"
+              key={notice.noticeId}
+            >
 
-              <p>{notice.content}</p>
+              <div className="card-icon">
+                📢
+              </div>
+
+              <h3>
+                {notice.title}
+              </h3>
+
+              <p>
+                {notice.content}
+              </p>
 
               <small>
                 Type: {notice.noticeType}
@@ -59,10 +100,15 @@ function NoticePage({ onBack }) {
               <small>
                 Published: {notice.publishDate}
               </small>
+
             </div>
+
           ))}
+
         </div>
+
       )}
+
     </div>
   );
 }
