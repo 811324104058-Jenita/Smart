@@ -79,26 +79,23 @@ function AmenityBookingPage({ email, onBack }) {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        "/api/bookings",
-        {
-          method: "POST",
+      const response = await fetch("/api/bookings", {
+        method: "POST",
 
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
 
-          body: JSON.stringify({
-            amenityId: Number(amenityId),
-            residentEmail: email,
-            bookingDate: bookingDate,
-            startTime: startTime + ":00",
-            endTime: endTime + ":00",
-            amount: selectedAmenity?.bookingFee || 0,
-          }),
-        }
-      );
+        body: JSON.stringify({
+          amenityId: Number(amenityId),
+          residentEmail: email,
+          bookingDate: bookingDate,
+          startTime: startTime + ":00",
+          endTime: endTime + ":00",
+          amount: selectedAmenity?.bookingFee || 0,
+        }),
+      });
 
       const data = await response.text();
 
@@ -121,7 +118,7 @@ function AmenityBookingPage({ email, onBack }) {
   };
 
   return (
-    <div className="complaint-page">
+    <div className="amenity-page">
 
       <div className="complaint-header">
         <div>
