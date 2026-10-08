@@ -88,227 +88,439 @@ function VisitorPage({ email, onBack }) {
     }
   };
 
+  const residentName =
+    localStorage.getItem("name") || "Resident";
+
   return (
-    <div className="dashboard">
+    <div className="visitor-dashboard">
 
-      <main className="dashboard-main">
+      {/* SIDEBAR */}
 
-        <header className="dashboard-header">
+      <aside className="visitor-sidebar">
 
-          <div>
-            <p className="welcome-text">
-              VISITOR MANAGEMENT 🚪
-            </p>
+        <div className="visitor-logo">
 
-            <h1>My Visitors</h1>
-
-            <p>
-              Register and track your visitors.
-            </p>
+          <div className="visitor-logo-icon">
+            🏠
           </div>
 
-          <button
-            className="logout-btn"
+          <div>
+            <h2>Smart Society</h2>
+            <span>Resident Portal</span>
+          </div>
+
+        </div>
+
+        <div className="visitor-menu">
+
+          <div
+            className="visitor-menu-item"
             onClick={onBack}
           >
-            ← Back
-          </button>
+            <span>⌂</span>
+            <span>Dashboard</span>
+          </div>
+
+          <div className="visitor-menu-item">
+            <span>♙</span>
+            <span>My Profile</span>
+          </div>
+
+          <div className="visitor-menu-item">
+            <span>▣</span>
+            <span>My Complaints</span>
+          </div>
+
+          <div className="visitor-menu-item">
+            <span>▤</span>
+            <span>Payments</span>
+          </div>
+
+          <div className="visitor-menu-item">
+            <span>▦</span>
+            <span>Amenity Booking</span>
+          </div>
+
+          <div className="visitor-menu-item">
+            <span>♢</span>
+            <span>Notices</span>
+          </div>
+
+          <div className="visitor-menu-item visitor-active">
+            <span>♙</span>
+            <span>Visitors</span>
+          </div>
+
+        </div>
+
+        <div className="visitor-sidebar-bottom">
+
+          <div className="visitor-city-icon">
+            🏙️
+          </div>
+
+          <div>Better Community</div>
+          <div>Together</div>
+
+        </div>
+
+      </aside>
+
+
+      {/* MAIN */}
+
+      <main className="visitor-main">
+
+        {/* TOP HEADER */}
+
+        <header className="visitor-top-header">
+
+          <div></div>
+
+          <div className="visitor-user-area">
+
+            <span className="visitor-bell">
+              ♧
+            </span>
+
+            <div className="visitor-user-avatar">
+              {residentName.charAt(0).toUpperCase()}
+            </div>
+
+            <div className="visitor-user-details">
+
+              <strong>
+                {residentName}
+              </strong>
+
+              <span>
+                {email}
+              </span>
+
+            </div>
+
+            <button
+              className="visitor-back-icon"
+              onClick={onBack}
+            >
+              ⇥
+            </button>
+
+          </div>
 
         </header>
 
-        <section className="dashboard-grid">
 
-          <div className="activity-panel">
+        {/* PAGE TITLE */}
 
-            <div className="section-title">
+        <div className="visitor-page-heading">
+
+          <div>
+
+            <h1>Visitors</h1>
+
+            <p>
+              Register and manage your visitors
+            </p>
+
+          </div>
+
+          <div className="visitor-total-badge">
+            {visitors.length} Visitors
+          </div>
+
+        </div>
+
+
+        {/* CONTENT */}
+
+        <section className="visitor-content-grid">
+
+
+          {/* REGISTER CARD */}
+
+          <div className="visitor-register-card">
+
+            <div className="visitor-section-heading">
+
+              <div className="visitor-heading-icon">
+                👤
+              </div>
+
               <div>
+
                 <h2>Register Visitor</h2>
 
                 <p>
                   Pre-register your visitor before arrival.
                 </p>
+
               </div>
+
             </div>
 
-            <form onSubmit={registerVisitor}>
 
-              <input
-                type="text"
-                placeholder="Visitor Name"
-                value={visitorName}
-                onChange={(e) =>
-                  setVisitorName(e.target.value)
-                }
-                required
-              />
+            <form
+              className="visitor-form"
+              onSubmit={registerVisitor}
+            >
 
-              <input
-                type="text"
-                placeholder="Phone Number"
-                value={phone}
-                onChange={(e) =>
-                  setPhone(e.target.value)
-                }
-                required
-              />
+              <div className="visitor-input-group">
 
-              <input
-                type="text"
-                placeholder="Purpose of Visit"
-                value={purpose}
-                onChange={(e) =>
-                  setPurpose(e.target.value)
-                }
-                required
-              />
+                <label>
+                  Visitor Name
+                </label>
 
-              <input
-                type="text"
-                placeholder="Vehicle Number"
-                value={vehicleNumber}
-                onChange={(e) =>
-                  setVehicleNumber(e.target.value)
-                }
-              />
+                <input
+                  type="text"
+                  placeholder="Enter visitor name"
+                  value={visitorName}
+                  onChange={(e) =>
+                    setVisitorName(e.target.value)
+                  }
+                  required
+                />
 
-              <button type="submit">
+              </div>
+
+
+              <div className="visitor-input-group">
+
+                <label>
+                  Phone Number
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Enter phone number"
+                  value={phone}
+                  onChange={(e) =>
+                    setPhone(e.target.value)
+                  }
+                  required
+                />
+
+              </div>
+
+
+              <div className="visitor-input-group">
+
+                <label>
+                  Purpose of Visit
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Example: Family visit"
+                  value={purpose}
+                  onChange={(e) =>
+                    setPurpose(e.target.value)
+                  }
+                  required
+                />
+
+              </div>
+
+
+              <div className="visitor-input-group">
+
+                <label>
+                  Vehicle Number
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Optional"
+                  value={vehicleNumber}
+                  onChange={(e) =>
+                    setVehicleNumber(e.target.value)
+                  }
+                />
+
+              </div>
+
+
+              <button
+                type="submit"
+                className="visitor-register-btn"
+              >
                 Register Visitor
+                <span>→</span>
               </button>
 
             </form>
 
+
             {message && (
-              <p
-                style={{
-                  color: "green",
-                  marginTop: "15px"
-                }}
-              >
+              <div className="visitor-success">
                 {message}
-              </p>
+              </div>
             )}
 
+
             {error && (
-              <p
-                style={{
-                  color: "red",
-                  marginTop: "15px"
-                }}
-              >
+              <div className="visitor-error">
                 {error}
-              </p>
+              </div>
             )}
 
           </div>
 
-          <div className="notice-panel">
 
-            <div className="section-title">
+          {/* HISTORY CARD */}
+
+          <div className="visitor-history-card">
+
+            <div className="visitor-history-heading">
 
               <div>
+
                 <h2>Visitor History</h2>
 
                 <p>
                   Your registered visitors
                 </p>
+
               </div>
+
+              <span className="visitor-history-count">
+                {visitors.length}
+              </span>
 
             </div>
 
+
             {visitors.length === 0 ? (
-              <p>
-                No visitors registered yet.
-              </p>
+
+              <div className="visitor-empty">
+
+                <div className="visitor-empty-icon">
+                  👥
+                </div>
+
+                <h3>
+                  No Visitors Yet
+                </h3>
+
+                <p>
+                  Your registered visitors will appear here.
+                </p>
+
+              </div>
+
             ) : (
 
-              visitors.map((visitor) => (
+              <div className="visitor-list">
 
-                <div
-                  className="notice-card"
-                  key={visitor.id}
-                >
+                {visitors.map((visitor) => (
 
-                  <span>👤</span>
+                  <div
+                    className="visitor-history-item"
+                    key={visitor.id}
+                  >
 
-                  <div>
+                    <div className="visitor-item-top">
 
-                    <h4>
-                      {visitor.visitorName}
-                    </h4>
+                      <div className="visitor-item-person">
 
-                    <p>
-                      📞 {visitor.phone}
-                    </p>
+                        <div className="visitor-person-icon">
+                          👤
+                        </div>
 
-                    <p>
-                      🎯 {visitor.purpose}
-                    </p>
+                        <div>
 
-                    <p>
-                      🚗{" "}
-                      {visitor.vehicleNumber ||
-                        "No vehicle"}
-                    </p>
+                          <h3>
+                            {visitor.visitorName}
+                          </h3>
 
-                    <p>
-                      Status:{" "}
-                      <strong>
+                          <span>
+                            {visitor.purpose}
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                      <span className="visitor-status">
                         {visitor.verificationStatus}
-                      </strong>
-                    </p>
+                      </span>
 
-                    <p>
-                      Entry:{" "}
-                      {visitor.entryTime
-                        ? new Date(
-                            visitor.entryTime
-                          ).toLocaleString()
-                        : "Not entered"}
-                    </p>
+                    </div>
 
-                    <p>
-                      Exit:{" "}
-                      {visitor.exitTime
-                        ? new Date(
-                            visitor.exitTime
-                          ).toLocaleString()
-                        : "Not exited"}
-                    </p>
 
-                    <div
-                      style={{
-                        marginTop: "15px",
-                        textAlign: "center"
-                      }}
-                    >
+                    <div className="visitor-details-grid">
 
-                      <p>
+                      <div>
+                        <small>Phone</small>
                         <strong>
-                          Visitor QR Pass
+                          📞 {visitor.phone}
                         </strong>
-                      </p>
+                      </div>
 
-                      <QRCodeCanvas
-                        value={visitor.qrPass}
-                        size={160}
-                      />
+                      <div>
+                        <small>Vehicle</small>
+                        <strong>
+                          🚗{" "}
+                          {visitor.vehicleNumber ||
+                            "No vehicle"}
+                        </strong>
+                      </div>
 
-                      <p
-                        style={{
-                          fontSize: "11px",
-                          wordBreak: "break-all"
-                        }}
-                      >
-                        {visitor.qrPass}
-                      </p>
+                      <div>
+                        <small>Entry</small>
+                        <strong>
+                          {visitor.entryTime
+                            ? new Date(
+                                visitor.entryTime
+                              ).toLocaleString()
+                            : "Not entered"}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <small>Exit</small>
+                        <strong>
+                          {visitor.exitTime
+                            ? new Date(
+                                visitor.exitTime
+                              ).toLocaleString()
+                            : "Not exited"}
+                        </strong>
+                      </div>
+
+                    </div>
+
+
+                    <div className="visitor-qr-section">
+
+                      <div>
+
+                        <h4>
+                          Visitor QR Pass
+                        </h4>
+
+                        <p>
+                          Show this QR code at the security gate.
+                        </p>
+
+                      </div>
+
+                      <div className="visitor-qr">
+
+                        <QRCodeCanvas
+                          value={visitor.qrPass}
+                          size={120}
+                        />
+
+                      </div>
 
                     </div>
 
                   </div>
 
-                </div>
+                ))}
 
-              ))
+              </div>
 
             )}
 
