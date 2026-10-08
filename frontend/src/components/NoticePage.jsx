@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./Dashboard.css";
 
 function NoticePage({ onBack }) {
   const [notices, setNotices] = useState([]);
@@ -34,80 +35,172 @@ function NoticePage({ onBack }) {
   }, []);
 
   return (
-    <div className="dashboard-page">
+    <div className="notice-page">
 
-      <div className="dashboard-header">
+      <div className="notice-topbar">
 
         <div>
+          <button
+            className="notice-back-btn"
+            onClick={onBack}
+          >
+            ← Back to Dashboard
+          </button>
+
           <h1>Notices</h1>
+
           <p>
-            Society announcements and important updates
+            Stay updated with the latest society announcements
           </p>
         </div>
 
-        <button
-          className="logout-btn"
-          onClick={onBack}
-        >
-          Back to Dashboard
-        </button>
+        <div className="notice-page-icon">
+          📢
+        </div>
 
       </div>
 
-      {loading ? (
 
-        <p>Loading notices...</p>
+      <div className="notice-summary">
 
-      ) : notices.length === 0 ? (
+        <div className="notice-summary-card">
 
-        <p>No notices available.</p>
+          <div className="notice-summary-icon">
+            📋
+          </div>
 
-      ) : (
-
-        <div className="dashboard-grid">
-
-          {notices.map((notice) => (
-
-            <div
-              className="dashboard-card"
-              key={notice.noticeId}
-            >
-
-              <div className="card-icon">
-                📢
-              </div>
-
-              <h3>
-                {notice.title}
-              </h3>
-
-              <p>
-                {notice.content}
-              </p>
-
-              <small>
-                Type: {notice.noticeType}
-              </small>
-
-              <br />
-
-              <small>
-                Priority: {notice.priority}
-              </small>
-
-              <br />
-
-              <small>
-                Published: {notice.publishDate}
-              </small>
-
-            </div>
-
-          ))}
+          <div>
+            <span>Total Notices</span>
+            <strong>{notices.length}</strong>
+          </div>
 
         </div>
 
-      )}
+        <div className="notice-summary-card">
+
+          <div className="notice-summary-icon">
+            🔔
+          </div>
+
+          <div>
+            <span>Latest Updates</span>
+            <strong>
+              {notices.length > 0 ? "Available" : "None"}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div className="notice-main-card">
+
+        <div className="notice-section-heading">
+
+          <div>
+            <h2>Society Announcements</h2>
+
+            <p>
+              Important updates and information from your society
+            </p>
+          </div>
+
+          <div className="notice-count">
+            {notices.length}
+          </div>
+
+        </div>
+
+
+        {loading ? (
+
+          <div className="notice-empty">
+
+            <div className="notice-empty-icon">
+              ⏳
+            </div>
+
+            <h3>Loading notices...</h3>
+
+          </div>
+
+        ) : notices.length === 0 ? (
+
+          <div className="notice-empty">
+
+            <div className="notice-empty-icon">
+              📭
+            </div>
+
+            <h3>No Notices Available</h3>
+
+            <p>
+              There are currently no announcements from the society.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="notice-list">
+
+            {notices.map((notice) => (
+
+              <div
+                className="notice-modern-card"
+                key={notice.noticeId}
+              >
+
+                <div className="notice-icon-box">
+                  📢
+                </div>
+
+                <div className="notice-content">
+
+                  <div className="notice-title-row">
+
+                    <h3>
+                      {notice.title}
+                    </h3>
+
+                    <span className="notice-priority">
+                      {notice.priority}
+                    </span>
+
+                  </div>
+
+                  <p className="notice-description">
+                    {notice.content}
+                  </p>
+
+                  <div className="notice-meta">
+
+                    <span>
+                      📂 {notice.noticeType}
+                    </span>
+
+                    <span>
+                      📅 {notice.publishDate}
+                    </span>
+
+                  </div>
+
+                </div>
+
+                <div className="notice-arrow">
+                  →
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
 
     </div>
   );
