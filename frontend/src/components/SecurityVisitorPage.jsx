@@ -104,45 +104,60 @@ function SecurityVisitorPage({ onBack }) {
   };
 
   return (
-    <div className="dashboard">
-      <main className="dashboard-main">
+    <div className="security-visitor-page">
 
-        <header className="dashboard-header">
+      <header className="security-visitor-header">
 
-          <div>
-            <p className="welcome-text">
-              SECURITY MANAGEMENT 🛡️
-            </p>
-
-            <h1>Visitor Verification</h1>
-
-            <p>
-              Verify visitor QR passes and manage entry and exit.
-            </p>
-          </div>
-
+        <div>
           <button
-            className="logout-btn"
+            className="security-back-btn"
             onClick={onBack}
           >
-            ← Back
+            ← Back to Security Dashboard
           </button>
 
-        </header>
+          <div className="security-page-tag">
+            🛡️ SECURITY MANAGEMENT
+          </div>
 
-        <section className="dashboard-grid">
+          <h1>
+            Visitor <span>Verification</span>
+          </h1>
 
-          <div className="activity-panel">
+          <p>
+            Verify visitor QR passes and manage entry and exit.
+          </p>
+        </div>
 
-            <div className="section-title">
-              <div>
-                <h2>Scan / Enter QR Pass</h2>
+        <div className="security-page-icon">
+          🎫
+        </div>
 
-                <p>
-                  Enter the visitor QR pass to verify the visitor.
-                </p>
-              </div>
+      </header>
+
+      <div className="security-verification-grid">
+
+        <div className="security-search-card">
+
+          <div className="security-card-heading">
+
+            <div className="security-card-icon">
+              🔍
             </div>
+
+            <div>
+              <h2>Verify Visitor</h2>
+
+              <p>
+                Enter the visitor QR pass to check their details.
+              </p>
+            </div>
+
+          </div>
+
+          <div className="security-input-group">
+
+            <label>Visitor QR Pass</label>
 
             <input
               type="text"
@@ -151,141 +166,201 @@ function SecurityVisitorPage({ onBack }) {
               onChange={(e) => setQrPass(e.target.value)}
             />
 
-            <button
-              onClick={searchVisitor}
-              style={{ marginTop: "15px" }}
-            >
-              🔍 Search Visitor
-            </button>
+          </div>
 
-            {message && (
-              <p
-                style={{
-                  color: "green",
-                  marginTop: "15px",
-                }}
-              >
-                {message}
-              </p>
-            )}
+          <button
+            className="security-search-btn"
+            onClick={searchVisitor}
+          >
+            🔍 Search Visitor
+          </button>
 
-            {error && (
-              <p
-                style={{
-                  color: "red",
-                  marginTop: "15px",
-                }}
-              >
-                {error}
+          {message && (
+            <div className="security-success-message">
+              {message}
+            </div>
+          )}
+
+          {error && (
+            <div className="security-error-message">
+              {error}
+            </div>
+          )}
+
+          <div className="security-info-box">
+            <span>💡</span>
+
+            <div>
+              <strong>Security Check</strong>
+
+              <p>
+                Search the QR pass provided by the resident
+                before allowing visitor entry.
               </p>
-            )}
+            </div>
+          </div>
+
+        </div>
+
+        <div className="security-details-card">
+
+          <div className="security-card-heading">
+
+            <div className="security-card-icon">
+              👤
+            </div>
+
+            <div>
+              <h2>Visitor Details</h2>
+
+              <p>
+                Visitor information and verification status
+              </p>
+            </div>
 
           </div>
 
-          <div className="notice-panel">
+          {!visitor ? (
 
-            <div className="section-title">
+            <div className="security-empty-state">
 
-              <div>
-                <h2>Visitor Details</h2>
-
-                <p>
-                  Visitor information and verification status
-                </p>
+              <div className="security-empty-icon">
+                🎫
               </div>
+
+              <h3>No Visitor Selected</h3>
+
+              <p>
+                Search using a QR pass to view visitor details.
+              </p>
 
             </div>
 
-            {!visitor ? (
-              <p>
-                Search for a visitor using the QR pass.
-              </p>
-            ) : (
-              <div className="notice-card">
+          ) : (
 
-                <span>👤</span>
+            <div className="security-visitor-details">
+
+              <div className="security-visitor-profile">
+
+                <div className="security-large-avatar">
+                  {visitor.visitorName
+                    ?.charAt(0)
+                    .toUpperCase()}
+                </div>
 
                 <div>
+                  <h3>{visitor.visitorName}</h3>
 
-                  <h4>
-                    {visitor.visitorName}
-                  </h4>
+                  <span
+                    className={
+                      visitor.verificationStatus === "VERIFIED"
+                        ? "security-status verified"
+                        : "security-status pending"
+                    }
+                  >
+                    {visitor.verificationStatus}
+                  </span>
+                </div>
 
-                  <p>
-                    📧 Resident: {visitor.residentEmail}
-                  </p>
+              </div>
 
-                  <p>
-                    📞 Phone: {visitor.phone}
-                  </p>
+              <div className="security-details-grid">
 
-                  <p>
-                    🎯 Purpose: {visitor.purpose}
-                  </p>
+                <div className="security-detail-item">
+                  <small>Resident</small>
+                  <strong>
+                    📧 {visitor.residentEmail}
+                  </strong>
+                </div>
 
-                  <p>
-                    🚗 Vehicle:{" "}
-                    {visitor.vehicleNumber || "No vehicle"}
-                  </p>
+                <div className="security-detail-item">
+                  <small>Phone</small>
+                  <strong>
+                    📞 {visitor.phone}
+                  </strong>
+                </div>
 
-                  <p>
-                    🎫 QR Pass: {visitor.qrPass}
-                  </p>
+                <div className="security-detail-item">
+                  <small>Purpose</small>
+                  <strong>
+                    🎯 {visitor.purpose}
+                  </strong>
+                </div>
 
-                  <p>
-                    Status:{" "}
-                    <strong>
-                      {visitor.verificationStatus}
-                    </strong>
-                  </p>
+                <div className="security-detail-item">
+                  <small>Vehicle</small>
+                  <strong>
+                    🚗{" "}
+                    {visitor.vehicleNumber ||
+                      "No vehicle"}
+                  </strong>
+                </div>
 
-                  <p>
-                    Entry:{" "}
+                <div className="security-detail-item">
+                  <small>Entry</small>
+                  <strong>
                     {visitor.entryTime
                       ? new Date(
                           visitor.entryTime
                         ).toLocaleString()
                       : "Not entered"}
-                  </p>
+                  </strong>
+                </div>
 
-                  <p>
-                    Exit:{" "}
+                <div className="security-detail-item">
+                  <small>Exit</small>
+                  <strong>
                     {visitor.exitTime
                       ? new Date(
                           visitor.exitTime
                         ).toLocaleString()
                       : "Not exited"}
-                  </p>
-
-                  {visitor.verificationStatus !== "VERIFIED" && (
-                    <button
-                      onClick={verifyVisitor}
-                      style={{ marginTop: "10px" }}
-                    >
-                      ✅ Verify Visitor
-                    </button>
-                  )}
-
-                  {visitor.verificationStatus === "VERIFIED" &&
-                    !visitor.exitTime && (
-                      <button
-                        onClick={recordExit}
-                        style={{ marginTop: "10px" }}
-                      >
-                        🚪 Record Exit
-                      </button>
-                    )}
-
+                  </strong>
                 </div>
 
               </div>
-            )}
 
-          </div>
+              <div className="security-qr-box">
 
-        </section>
+                <small>QR PASS</small>
 
-      </main>
+                <strong>
+                  {visitor.qrPass}
+                </strong>
+
+              </div>
+
+              <div className="security-action-buttons">
+
+                {visitor.verificationStatus !== "VERIFIED" && (
+                  <button
+                    className="security-verify-btn"
+                    onClick={verifyVisitor}
+                  >
+                    ✅ Verify Visitor
+                  </button>
+                )}
+
+                {visitor.verificationStatus === "VERIFIED" &&
+                  !visitor.exitTime && (
+                    <button
+                      className="security-exit-btn"
+                      onClick={recordExit}
+                    >
+                      🚪 Record Visitor Exit
+                    </button>
+                  )}
+
+              </div>
+
+            </div>
+
+          )}
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
