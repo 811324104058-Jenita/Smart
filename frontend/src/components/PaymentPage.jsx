@@ -3,7 +3,7 @@ import "./Dashboard.css";
 
 function PaymentPage({ email, onBack }) {
   const [payments, setPayments] = useState([]);
-  const [amount, setAmount] = useState(2500);
+  const [amount, setAmount] = useState("");
   const [billingMonth, setBillingMonth] = useState("September 2026");
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [message, setMessage] = useState("");
@@ -45,6 +45,11 @@ function PaymentPage({ email, onBack }) {
 
     setMessage("");
 
+    if (!amount || Number(amount) <= 0) {
+      setMessage("Please enter a valid amount ❌");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
 
@@ -69,6 +74,8 @@ function PaymentPage({ email, onBack }) {
       }
 
       setMessage("Payment successful! ✅");
+
+      setAmount("");
 
       fetchPayments();
     } catch (error) {
@@ -118,11 +125,12 @@ function PaymentPage({ email, onBack }) {
 
             <input
               type="number"
+              min="1"
               value={amount}
               onChange={(e) =>
                 setAmount(e.target.value)
               }
-              placeholder="Amount"
+              placeholder="Enter Amount"
               required
             />
 
@@ -140,7 +148,7 @@ function PaymentPage({ email, onBack }) {
             </select>
 
             <button type="submit">
-              Pay ₹{amount}
+              {amount ? `Pay ₹${amount}` : "Enter Amount"}
             </button>
 
           </form>
