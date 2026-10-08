@@ -1,13 +1,16 @@
 import { useState } from "react";
 import "./Dashboard.css";
 import SecurityVisitorPage from "./SecurityVisitorPage";
+import ResidentDirectoryPage from "./ResidentDirectoryPage";
+import EmergencyAlertPage from "./EmergencyAlertPage";
+   
 
 function SecurityDashboard({ email, onLogout }) {
   const [currentPage, setCurrentPage] = useState("dashboard");
 
-  const securityEmail =
-    email || localStorage.getItem("email");
+  const securityEmail = email || localStorage.getItem("email");
 
+  // Visitor Management Page
   if (currentPage === "visitors") {
     return (
       <SecurityVisitorPage
@@ -15,11 +18,27 @@ function SecurityDashboard({ email, onLogout }) {
       />
     );
   }
+  if (currentPage === "residents") {
+  return (
+    <ResidentDirectoryPage
+      onBack={() => setCurrentPage("dashboard")}
+    />
+  );
+}
+if (currentPage === "alerts") {
+  return (
+    <EmergencyAlertPage
+      onBack={() => setCurrentPage("dashboard")}
+    />
+  );
+}
+
 
   return (
-    <div className="dashboard">
+    <div className="security-dashboard">
 
-      <aside className="sidebar">
+      {/* SIDEBAR */}
+      <aside className="security-sidebar">
 
         <div className="sidebar-logo">
           <h2>🛡️ SmartSociety</h2>
@@ -29,7 +48,9 @@ function SecurityDashboard({ email, onLogout }) {
         <div className="menu">
 
           <div
-            className="menu-item active"
+            className={`menu-item ${
+              currentPage === "dashboard" ? "active" : ""
+            }`}
             onClick={() => setCurrentPage("dashboard")}
           >
             🏠 Dashboard
@@ -55,17 +76,22 @@ function SecurityDashboard({ email, onLogout }) {
           >
             📋 Visitor Records
           </div>
+          <div
+  className="menu-item"
+  onClick={() => setCurrentPage("residents")}
+>
+  🏢 Resident Directory
+</div>
 
-          <div className="menu-item">
-            🏢 Resident Directory
-          </div>
-
-          <div className="menu-item">
-            🚨 Emergency Alerts
-          </div>
+         <div
+  className="menu-item"
+  onClick={() => setCurrentPage("alerts")}
+>
+  🚨 Emergency Alerts
+</div>
 
         </div>
-
+  
         <button
           className="logout-btn"
           onClick={onLogout}
@@ -75,8 +101,10 @@ function SecurityDashboard({ email, onLogout }) {
 
       </aside>
 
-      <main className="dashboard-main">
+      {/* MAIN CONTENT */}
+      <main className="security-main">
 
+        {/* HEADER */}
         <header className="dashboard-header">
 
           <div>
@@ -93,7 +121,7 @@ function SecurityDashboard({ email, onLogout }) {
 
           <div className="user-info">
 
-            🔔
+            <span>🔔</span>
 
             <div className="user-avatar">
               🛡️
@@ -108,6 +136,7 @@ function SecurityDashboard({ email, onLogout }) {
 
         </header>
 
+        {/* STATISTICS */}
         <section className="stats-grid">
 
           <div className="stat-card">
@@ -124,6 +153,7 @@ function SecurityDashboard({ email, onLogout }) {
 
           </div>
 
+
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -138,6 +168,7 @@ function SecurityDashboard({ email, onLogout }) {
 
           </div>
 
+
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -151,6 +182,7 @@ function SecurityDashboard({ email, onLogout }) {
             </div>
 
           </div>
+
 
           <div className="stat-card">
 
@@ -168,14 +200,18 @@ function SecurityDashboard({ email, onLogout }) {
 
         </section>
 
+
+        {/* DASHBOARD CONTENT */}
         <section className="dashboard-grid">
 
+          {/* RECENT ACTIVITY */}
           <div className="activity-panel">
 
             <div className="section-title">
 
               <div>
                 <h2>Recent Visitor Activity</h2>
+
                 <p>
                   Latest entries and exits
                 </p>
@@ -189,6 +225,7 @@ function SecurityDashboard({ email, onLogout }) {
 
             </div>
 
+
             <div className="activity">
 
               <span className="activity-icon">
@@ -197,6 +234,7 @@ function SecurityDashboard({ email, onLogout }) {
 
               <div>
                 <h4>Visitor Entered</h4>
+
                 <p>
                   Raj Kumar entered for Apartment A-204.
                 </p>
@@ -208,6 +246,7 @@ function SecurityDashboard({ email, onLogout }) {
 
             </div>
 
+
             <div className="activity">
 
               <span className="activity-icon">
@@ -216,6 +255,7 @@ function SecurityDashboard({ email, onLogout }) {
 
               <div>
                 <h4>Visitor Exited</h4>
+
                 <p>
                   Priya Sharma exited from Apartment B-105.
                 </p>
@@ -227,6 +267,7 @@ function SecurityDashboard({ email, onLogout }) {
 
             </div>
 
+
             <div className="activity">
 
               <span className="activity-icon">
@@ -235,6 +276,7 @@ function SecurityDashboard({ email, onLogout }) {
 
               <div>
                 <h4>Delivery Entry</h4>
+
                 <p>
                   Amazon delivery entered for Apartment C-302.
                 </p>
@@ -248,18 +290,22 @@ function SecurityDashboard({ email, onLogout }) {
 
           </div>
 
+
+          {/* QUICK ACTIONS */}
           <div className="notice-panel">
 
             <div className="section-title">
 
               <div>
                 <h2>Quick Actions</h2>
+
                 <p>
                   Frequently used security actions
                 </p>
               </div>
 
             </div>
+
 
             <div
               className="notice-card"
@@ -283,6 +329,7 @@ function SecurityDashboard({ email, onLogout }) {
 
             </div>
 
+
             <div
               className="notice-card"
               onClick={() => setCurrentPage("visitors")}
@@ -305,7 +352,12 @@ function SecurityDashboard({ email, onLogout }) {
 
             </div>
 
-            <div className="notice-card">
+
+            <div
+              className="notice-card"
+              onClick={() => alert("Emergency Alert feature coming soon 🚨")}
+              style={{ cursor: "pointer" }}
+            >
 
               <span>
                 🚨
